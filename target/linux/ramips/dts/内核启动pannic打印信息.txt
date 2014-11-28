@@ -1,0 +1,91 @@
+[    0.420000] rt2880_gpio 10000600.gpio: registering 24 gpios
+[    0.430000] rt2880_gpio 10000600.gpio: registering 24 irq handlers
+[    0.430000] Switched to clocksource systick
+[    0.440000] NET: Registered protocol family 2
+[    0.440000] TCP established hash table entries: 1024 (order: 0, 4096 bytes)
+[    0.460000] TCP bind hash table entries: 1024 (order: 0, 4096 bytes)
+[    0.460000] TCP: Hash tables configured (established 1024 bind 1024)
+[    0.460000] TCP: reno registered
+[    0.460000] UDP hash table entries: 256 (order: 0, 4096 bytes)
+[    0.460000] UDP-Lite hash table entries: 256 (order: 0, 4096 bytes)
+[    0.460000] NET: Registered protocol family 1
+[    0.460000] rt-timer 10000100.timer: maximum frequency is 2441Hz
+[    0.460000] futex hash table entries: 256 (order: -1, 3072 bytes)
+[    0.460000] squashfs: version 4.0 (2009/01/31) Phillip Lougher
+[    0.460000] jffs2: version 2.2 (NAND) (SUMMARY) (LZMA) (RTIME) (CMODE_PRIORITY) (c) 2001-2006 Red Hat, Inc.
+[    0.460000] msgmni has been set to 120
+[    0.460000] io scheduler noop registered
+[    0.460000] io scheduler deadline registered (default)
+[    0.460000] Serial: 8250/16550 driver, 2 ports, IRQ sharing disabled
+[    0.460000] 10000c00.uartlite: ttyS0 at MMIO 0x10000c00 (irq = 20, base_baud = 2500000) is a 16550A
+[    0.460000] console [ttyS0] enabled
+[    0.460000] console [ttyS0] enabled
+[    0.460000] bootconsole [early0] disabled
+[    0.460000] bootconsole [early0] disabled
+[    0.460000] m25p80 spi32766.0: found w25q128, expected en25q64
+[    0.460000] m25p80 spi32766.0: w25q128 (16384 Kbytes)
+[    0.460000] 4 ofpart partitions found on MTD device spi32766.0
+[    0.460000] Creating 4 MTD partitions on "spi32766.0":
+[    0.460000] 0x000000000000-0x000000030000 : "u-boot"
+[    0.460000] 0x000000030000-0x000000040000 : "u-boot-env"
+[    0.460000] 0x000000040000-0x000000050000 : "factory"
+[    0.460000] 0x000000050000-0x000000800000 : "firmware"
+[    0.790000] 0x00000015d507-0x000000800000 : "rootfs"
+[    0.790000] mtd: partition "rootfs" must either start or end on erase block boundary or be smaller than an erase block -- forcing read-only
+[    0.820000] mtd: device 4 (rootfs) set to be root filesystem
+[    0.840000] 1 squashfs-split partitions found on MTD device rootfs
+[    0.840000] 0x000000330000-0x000000800000 : "rootfs_data"
+[    0.860000] libphy: mdio: probed
+[    1.590000] CPU 0 Unable to handle kernel paging request at virtual address 0000011c, epc == 800d55e0, ra == 800d55a8
+[    1.610000] Oops[#1]:
+[    1.610000] CPU: 0 PID: 1 Comm: swapper Not tainted 3.14.18 #1
+[    1.610000] task: 83828000 ti: 8381a000 task.ti: 8381a000
+[    1.610000] $ 0   : 00000000 00000000 00000001 00000001
+[    1.610000] $ 4   : 8394543c 802b0000 83945408 ffffffff
+[    1.610000] $ 8   : 80100000 800fa2a0 800fa1f8 00000002
+[    1.610000] $12   : 00000013 0000000e 00000000 00000001
+[    1.610000] $16   : 00000000 838b0c00 00000004 83948fa0
+[    1.610000] $20   : 0260050f 00000000 00000014 802edcdc
+[    1.610000] $24   : 00000018 00000000                  
+[    1.610000] $28   : 8381a000 8381bc50 00000000 800d55a8
+[    1.610000] Hi    : 000000f0
+[    1.610000] Lo    : 00000002
+[    1.610000] epc   : 800d55e0 fe_connect_phy_node+0xf8/0x180
+[    1.610000]     Not tainted
+[    1.610000] ra    : 800d55a8 fe_connect_phy_node+0xc0/0x180
+[    1.610000] Status: 11008403 KERNEL EXL IE 
+[    1.610000] Cause : 00800008
+[    1.610000] BadVA : 0000011c
+[    1.610000] PrId  : 00019650 (MIPS 24KEc)
+[    1.610000] Modules linked in:
+[    1.610000] Process swapper (pid: 1, threadinfo=8381a000, task=83828000, tls=00000000)
+[    1.610000] Stack : 8381a000 8381bc78 00000000 801595cc 00000007 00000000 ffffffff 00000004
+          83948f90 801597a8 00000000 810052c8 00000001 838b0c00 810050e8 802b0954
+          00000005 838b0800 838b0c00 810050e8 802b0954 80340000 83858700 8030b18c
+          802f320c 80303660 802e0000 800aa23c 00000000 00000005 00000000 00000000
+          30687465 8003f500 838b0800 838b0800 00000000 802eb2d4 802e0000 801c14b8
+          ...
+[    1.610000] Call Trace:----------------------->kernel pannic，打印出pannic时内核调用栈。
+[    1.610000] [<800d55e0>] fe_connect_phy_node+0xf8/0x180--------->fe_connect_phy_node该函数和网口有关。
+[    1.610000] [<801597a8>] mt7620_port_init+0x374/0x420
+[    1.610000] [<80303660>] fe_init+0xf4/0x334
+[    1.610000] [<801c14b8>] register_netdevice+0xa4/0x48c
+[    1.610000] [<801c13f8>] register_netdev+0x1c/0x38
+[    1.610000] [<800d6f38>] fe_probe+0x224/0x2c4
+[    1.610000] [<801a0fbc>] platform_drv_probe+0x24/0x60
+[    1.610000] [<800c9218>] driver_probe_device+0xd8/0x22c
+[    1.610000] [<800337e4>] __driver_attach+0x7c/0xb4
+[    1.610000] [<80086db0>] bus_for_each_dev+0x98/0xa8
+[    1.610000] [<80086ac8>] bus_add_driver+0x104/0x1f4
+[    1.610000] [<800c9434>] driver_register+0xb0/0x104
+[    1.610000] [<800bf788>] do_one_initcall+0xf0/0x194
+[    1.610000] [<802f3ab4>] kernel_init_freeable+0x150/0x208
+[    1.610000] [<80008eb0>] kernel_init+0x10/0x114
+[    1.610000] [<80004878>] ret_from_kernel_thread+0x14/0x1c
+[    1.610000] 
+[    1.610000] 
+Code: ae400000  08035594  02001021 <8e02011c> 8e070034  304202ff  ae02011c  ae020120  24020001 
+[    2.070000] ---[ end trace f1a8ec0859eb21c9 ]---
+[    2.070000] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+[    2.070000] 
+[  108.290000] random: nonblocking pool is initialized
