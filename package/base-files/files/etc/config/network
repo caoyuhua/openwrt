@@ -10,9 +10,9 @@ config interface lan
 	option ifname	eth0
 	option type 	bridge
 	option proto	static
-	option ipaddr	192.168.1.1
+	option ipaddr	192.168.188.1
 	option netmask	255.255.255.0
 	option ip6assign 60
-
+#wan口由上级路由dhcp分配ip地址192.168.1.207，故需修改lan口ip保证wan口和lan口ip地址不在同一网段。
 config globals globals
 	option ula_prefix auto
