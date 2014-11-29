@@ -23,8 +23,8 @@ PKG_KCONFIG:=RT2860V2_AP_V24_DATA_STRUCTURE RT2860V2_AP_LED RT2860V2_AP_WSC RT28
 define KernelPackage/rt2860v2
   CATEGORY:=Ralink Properties
   TITLE:=Ralink MT7620 wifi AP driver
-  DEPENDS:=+TARGET_ramips_mt7620a +wireless-tools +maccalc
-  DEFAULT:=y if (CONFIG_TARGET_ramips_mt7620n || CONFIG_TARGET_ramips_mt7620a)
+  DEPENDS:=@TARGET_ramips_mt7620 +wireless-tools +maccalc
+  DEFAULT:=y if (CONFIG_TARGET_ramips_mt7620_MT7620a || CONFIG_TARGET_ramips_mt7620_E1700 || CONFIG_TARGET_ramips_mt7620_Default)
   FILES:=$(PKG_BUILD_DIR)/rt2860v2_ap/rt2860v2_ap.ko
   AUTOLOAD:=$(call AutoLoad,50,rt2860v2_ap)
   SUBMENU:=Drivers
