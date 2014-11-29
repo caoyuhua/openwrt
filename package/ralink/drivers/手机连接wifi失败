@@ -1,0 +1,8 @@
+---->brctl show：
+bridge name     bridge id               STP enabled     interfaces
+br-lan          7fff.50294d000015       no              eth0.1
+---->ra0未入桥，只有eth0.1入桥，brctl addif br-lan ra0
+bridge name     bridge id               STP enabled     interfaces
+br-lan          7fff.50294d000015       no              eth0.1
+                                                        ra0
+
