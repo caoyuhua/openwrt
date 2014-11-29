@@ -49,8 +49,9 @@
 #define G_BAND_REGION_6				6
 
 #define AP_MAC_PROFILE_PATH     "/etc/app/safe_macs"
+#if 0
 extern CHAR g_apcliMac[20];
-
+#endif
 
 COUNTRY_CODE_TO_COUNTRY_REGION allCountry[] = {
 	/* {Country Number, ISO Name, Country Name, Support 11A, 11A Country Region, Support 11G, 11G Country Region} */
@@ -6633,6 +6634,7 @@ INT	Show_MacTable_Proc(
 				pEntry->Addr[0], pEntry->Addr[1], pEntry->Addr[2],
 				pEntry->Addr[3], pEntry->Addr[4], pEntry->Addr[5]);
 			snprintf(temp,sizeof(temp), "%02x:%02x:%02x:%02x:%02x:%02x", PRINT_MAC(pEntry->Addr));
+/*			
 			if (strcmp(g_apcliMac, temp) == 0)
 			{
 				printk("\n");
@@ -6643,7 +6645,7 @@ INT	Show_MacTable_Proc(
 				strcat(fileValue, temp);
 				strcat(fileValue,";");
 			}
-
+*/
 			#if 0
 			printk("%-4d", (int)pEntry->Aid);
 			printk("%-4d", (int)pEntry->apidx);

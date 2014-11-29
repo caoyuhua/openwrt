@@ -50,9 +50,9 @@
 #ifdef APCLI_SUPPORT
 
 #include "rt_config.h"
-
+#if 0
 CHAR g_apcliMac[20] = {0};
-
+#endif
 /* --------------------------------- Public -------------------------------- */
 /*
 ========================================================================
@@ -364,14 +364,14 @@ BOOLEAN ApCliLinkUp(
 		if (pAd->ApCfg.bMACRepeaterEn)
 		{
 			snprintf(temp,sizeof(temp), "%02x:%02x:%02x:%02x:%02x:%02x", PRINT_MAC((PUCHAR)(pApCliEntry->ApCliMlmeAux.Bssid)));
-			memcpy(g_apcliMac, temp, sizeof(g_apcliMac));
+			//memcpy(g_apcliMac, temp, sizeof(g_apcliMac));
 			pMacEntry = RTMPInsertRepeaterMacEntry(pAd, (PUCHAR)(pApCliEntry->ApCliMlmeAux.Bssid), (ifIndex + MIN_NET_DEVICE_FOR_APCLI), CliIdx, TRUE);
 		}
 		else
 #endif /* MAC_REPEATER_SUPPORT */
 		{
 			snprintf(temp,sizeof(temp), "%02x:%02x:%02x:%02x:%02x:%02x", PRINT_MAC((PUCHAR)(pApCliEntry->ApCliMlmeAux.Bssid)));
-			memcpy(g_apcliMac, temp, sizeof(g_apcliMac));
+			//memcpy(g_apcliMac, temp, sizeof(g_apcliMac));
 			pMacEntry = MacTableInsertEntry(pAd, (PUCHAR)(pApCliEntry->ApCliMlmeAux.Bssid), (ifIndex + MIN_NET_DEVICE_FOR_APCLI), OPMODE_AP, TRUE);
 		}
 		
