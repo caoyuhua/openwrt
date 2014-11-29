@@ -1,0 +1,2 @@
+MT7620_AP_2T2R-4L_V15.BIN：本文件本来是应该写入e2prom的，但openwrt会自动检测
+并写入flash的factory分区，通过命令iwpriv ra0 e2p 可查看写入flash的factory分区bin内容.
