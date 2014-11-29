@@ -141,10 +141,10 @@ enable_rt2860v2() {
 		config_get apcli_encryption "$vif" apcli_encryption
 		config_get apcli_index "$vif" apcli_index
 
-		#added by chengwei
+		#added by yhau
 		config_get wps_disabled "$vif" wps_disabled
 		config_get wps_associate "$vif" wps_associate
-		#end,added by chengwei
+		#end,added by yhau
     
 		config_get_bool isolate "$vif" isolate 0
 		
@@ -355,14 +355,14 @@ config wifi-iface
 	option ifname	ra0
 	option network	lan
 	option mode	ap
-	option ssid	Wulian${devidx#0}_$(dd bs=1 skip=4 count=6 if=/lib/firmware/soc_wmac.eeprom 2>/dev/null | hexdump -v -n 6 -e '5/1 "%02x:" 1/1 "%02x"' | awk -F ":" '{print $4""$5""$6 }'| tr a-z A-Z)
+	option ssid	yhau${devidx#0}_$(dd bs=1 skip=4 count=6 if=/lib/firmware/soc_wmac.eeprom 2>/dev/null | hexdump -v -n 6 -e '5/1 "%02x:" 1/1 "%02x"' | awk -F ":" '{print $4""$5""$6 }'| tr a-z A-Z)
 	option encryption none
 
 config wifi-iface
 	option device radio0
 	option ifname apcli0
 	option mode sta
-	option ssid	Wulian${devidx#0}_$(dd bs=1 skip=4 count=6 if=/lib/firmware/soc_wmac.eeprom 2>/dev/null | hexdump -v -n 6 -e '5/1 "%02x:" 1/1 "%02x"' | awk -F ":" '{print $4""$5""$6 }'| tr a-z A-Z)
+	option ssid	yhau${devidx#0}_$(dd bs=1 skip=4 count=6 if=/lib/firmware/soc_wmac.eeprom 2>/dev/null | hexdump -v -n 6 -e '5/1 "%02x:" 1/1 "%02x"' | awk -F ":" '{print $4""$5""$6 }'| tr a-z A-Z)
 	option encryption none
 	option disabled 1
 EOF
