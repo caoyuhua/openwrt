@@ -57,21 +57,27 @@ endef
 # $(1), compression method
 # $(2), filename of image data
 # $(3), output filename
+#$(1)=lzma，$(2)=vmlinux-gw2416.bin.lzma，$(3)=vmlinux-gw2416.uImage
 define MkImage
 	$(eval imagename=$(if $(4),$(4),MIPS OpenWrt Linux-$(LINUX_VERSION)))
 	-mkimage -A mips -O linux -T kernel -C $(1) $(call kernel_entry)\
 		-n "$(imagename)" \
 		-d $(2) $(3)
 endef
-
+#$(1)=vmlinux-gw2416，$(2)=vmlinux-gw2416.bin.lzma
 define CompressLzma
 	$(STAGING_DIR_HOST)/bin/lzma e $(1) -lc1 -lp2 -pb2 $(2)
 endef
 
+#$(1)=squashfs，$(2)=小写的单板名称，$(3)=kernel+squashfs烧片文件空间，$(4)可省略
 define MkImageSysupgrade/squashfs
+#为output_name变量赋值字符串。
 	$(eval output_name=$(IMG_PREFIX)-$(2)-$(1)-$(if $(4),$(4),sysupgrade).bin)
+#cat命令获取uimage和root.squshfs映像，输出为一个固件bin文件.
 	cat $(KDIR)/vmlinux-$(2).uImage $(KDIR)/root.$(1) > $(KDIR)/$(output_name)
+#用$(STAGING_DIR_HOST)/bin/padjffs2工具为firmware固件打上pad.	
 	$(call prepare_generic_squashfs,$(KDIR)/$(output_name))
+#判断生成的固件是否超出kernel+squashfs烧片文件空间。	
 	if [ `stat -c%s "$(KDIR)/$(output_name)"` -gt $(3) ]; then \
 		echo "Warning: $(KDIR)/$(output_name) is too big" >&2; \
 	else \
@@ -83,9 +89,13 @@ endef
 # $(2), DTS filename without .dts extension
 # $(3), optional filename suffix, e.g. "-initramfs"
 define PatchKernelLzmaDtb
+#将KDIR目录下的vmlinux拷贝成vmlinux-gw2416；KDIR定义为build_dir/target-xxx/linux-ramips_mt7620a（该目录下才是LINUX_DIR,即linux3.10源码目录）
 	cp $(KDIR)/vmlinux$(3) $(KDIR)/vmlinux-$(1)$(3)
+#使用内核源码目录下的dtc工具将.dts文件编译成.dtb文件
 	$(LINUX_DIR)/scripts/dtc/dtc -O dtb -o $(KDIR)/$(2).dtb ../dts/$(2).dts
+#使用patch-dtb工具为vmlinux-gw2416内核映像打上.dtb.
 	$(STAGING_DIR_HOST)/bin/patch-dtb $(KDIR)/vmlinux-$(1)$(3) $(KDIR)/$(2).dtb
+#使用lzma工具将打过.dtb的vmlinux-gw2416文件压缩成vmlinux-gw2416.bin.lzma
 	$(call CompressLzma,$(KDIR)/vmlinux-$(1)$(3),$(KDIR)/vmlinux-$(1)$(3).bin.lzma)
 endef
 
@@ -93,8 +103,10 @@ endef
 # $(2), DTS filename without .dts extension
 # $(3), ih_name field of uImage header
 # $(4), optional filename suffix, e.g. "-initramfs"
+#$(1)=小写的板名称，$(2)=.dts文件名称，$(3)和$(4)可省略
 define MkImageLzmaDtb
 	$(call PatchKernelLzmaDtb,$(1),$(2),$(4))
+#使用mkimage工具将vmlinux-gw2416.bin.lzma做成vmlinux-gw2416.uImage
 	$(call MkImage,lzma,$(KDIR)/vmlinux-$(1)$(4).bin.lzma,$(KDIR)/vmlinux-$(1)$(4).uImage,$(3))
 endef
 
@@ -103,6 +115,7 @@ endef
 # $(3), DTS filename without .dts extension
 # $(4), maximum size of sysupgrade image
 # $(5), uImage header's ih_name field
+#$(1)=squashfs/initramfs；$(2)=小写的单板名称，$(3)=.dts文件名称，$(4)=kernel+squashfs烧片文件空间，$(5)和$(6)可省略。
 define BuildFirmware/OF
 	$(call MkImageLzmaDtb,$(2),$(3),$(5))
 	$(call MkImageSysupgrade/$(1),$(1),$(2),$(4),$(6))
@@ -142,10 +155,13 @@ BuildFirmware/Default16M/squashfs=$(call BuildFirmware/OF,$(1),$(2),$(3),$(ralin
 BuildFirmware/Default16M/initramfs=$(call BuildFirmware/OF/initramfs,$(1),$(2),$(3),$(4))
 
 # Build images for a custom sized flash layout
-# $(1) = squashfs/initramfs
-# $(2) = lowercase board name
-# $(3) = dts file
-# $(4) = kernel + rootfs size
+# $(1) = squashfs/initramfs------>构造固件类型为squashfs或initramfs
+# $(2) = lowercase board name----->小写的单板名称，如gw2410
+# $(3) = dts file----------------->.dts文件名称，如gwxxx.dts则其名称为gwxxx
+# $(4) = kernel + rootfs size----->kernel+rootfs的总大小，一般为flash的总大小如4/8/16M。
+#--------------------------------->$(5)和$(6)可省略.
+#Such as：Image/Build/Profile/GW5110=$(call BuildFirmware/CustomFlash/$(1),$(1),gw5110,gw5110,$(ralink_default_fw_size_16M))
+#
 BuildFirmware/CustomFlash/squashfs=$(call BuildFirmware/OF,$(1),$(2),$(3),$(4),$(5),$(6))
 BuildFirmware/CustomFlash/initramfs=$(call BuildFirmware/OF/initramfs,$(1),$(2),$(3))
 
