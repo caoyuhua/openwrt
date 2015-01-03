@@ -1,6 +1,15 @@
 --- a/drivers/mtd/Kconfig
 +++ b/drivers/mtd/Kconfig
 @@ -12,6 +12,32 @@ menuconfig MTD
+//bootargs：通过uboot setenv bootargs或在menuconfig中直接配置CONFIG_CMDLINE.
+//1.uboot setenv bootargs传递:uboot设置环境变量bootargs后会将bootargs保存在struct tag结构体中(struct bd_t结构体的成员结构体),
+//start_kernel()->setup_arch()->parse_tags()->parse_tag() ->parse_tag_cmdline()函数解析uboot传递的参数并赋给内核变量default_command_line
+
+//2.通过内核menuconfig配置CONFIG_CMDLINE或在arch/arm/setup.c中将default_command_line字符串变量写死：ralink_mips就没有uboot的
+//bootargs和bootcmd，他的uboot未用bootcmd也不向内核传递任何参数--->直接用bootcmd->bootm命令的函数bootm()跳到内核--->内核起来后将
+//内核分区表中的firmware分区切割出uimage+rootfs+rootfs分区，并使用内核默认的default_command_line root=/dev/mtdblock5
+//(据uimage头切割:uimage头中包含uimage映像大小进而可切割出uimage和rootfs)
+
  
  if MTD
  
@@ -10,7 +19,7 @@
 +	bool "Automatically set 'rootfs' partition to be root filesystem"
 +	default y
 +
-+config MTD_ROOTFS_SPLIT
++config MTD_ROOTFS_SPLIT//配置是否自动将rootfs分区切割为rootfs和rootfs_data分区
 +	bool "Automatically split 'rootfs' partition for squashfs"
 +	default y
 +
@@ -21,7 +30,7 @@
 +config MTD_SPLIT_FIRMWARE_NAME
 +	string "Firmware partition name"
 +	depends on MTD_SPLIT_FIRMWARE
-+	default "firmware"
++	default "firmware"//配置默认用于切割uimage/rootfs/rootfs_data的分区名称为firmware.
 +
 +config MTD_UIMAGE_SPLIT
 +	bool "Enable split support for firmware partitions containing a uImage"
@@ -135,7 +144,7 @@
 +	return len;
 +}
 +
-+#define ROOTFS_SPLIT_NAME "rootfs_data"
++#define ROOTFS_SPLIT_NAME "rootfs_data"//定义切割分区名:rootfs_data
 +
 +struct squashfs_super_block {
 +	__le32 s_magic;
@@ -198,7 +207,7 @@
 +			    split_size, false);
 +}
 +
-+#define UBOOT_MAGIC	0x27051956
++#define UBOOT_MAGIC	0x27051956//即固件前4字节内容，也是uimage头的前四字节.
 +
 +static void split_uimage(struct mtd_info *master, struct mtd_part *part)
 +{
@@ -225,7 +234,7 @@
 +}
 +
 +#ifdef CONFIG_MTD_SPLIT_FIRMWARE_NAME
-+#define SPLIT_FIRMWARE_NAME	CONFIG_MTD_SPLIT_FIRMWARE_NAME
++#define SPLIT_FIRMWARE_NAME	CONFIG_MTD_SPLIT_FIRMWARE_NAME//用于切割uimage/rootfs/rootfs_data的分区名称为firmware.
 +#else
 +#define SPLIT_FIRMWARE_NAME	"unused"
 +#endif
